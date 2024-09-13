@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {userId:""};
+const initialState = [];
+
 
 const alertSlice = createSlice({
-  name: 'user',
+  name: 'alert',
   initialState,
   reducers: {
     set_alert: (state, action) => {
@@ -11,10 +12,18 @@ const alertSlice = createSlice({
       return [...state, action];
     },
     remove_alert: (state, action) =>
-      state.filter((alert) => alert.id !== action.payload),
+      state.filter((alert) => alert.payload.id !== action.payload.id)
   },
 });
 
 export const { set_alert, remove_alert } = alertSlice.actions;
 
 export default alertSlice.reducer;
+
+
+
+
+
+
+
+

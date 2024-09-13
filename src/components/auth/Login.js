@@ -1,19 +1,40 @@
-import React, { Fragment, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Fragment, useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLoginMutation } from '../../redux/slices/usersApiSlice';
+import { setCredentials } from '../../redux/slices/authSlice';
 
-function Login() {
+const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
   const { email, password } = formData;
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [login, { isLoading }] = useLoginMutation();
+  const { userInfo } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate('/');
+    }
+  }, [navigate, userInfo]);
+
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log('SUCCESS');
+    try {
+      const res = await login({ email, password }).unwrap();
+      dispatch(setCredentials({ ...res }));
+      navigate('/');
+    } catch (err) {
+      console.log(err?.data?.message || err.error);
+    }
   };
   return (
     <section className='container'>
@@ -47,6 +68,6 @@ function Login() {
       </p>
     </section>
   );
-}
+};
 
 export default Login;

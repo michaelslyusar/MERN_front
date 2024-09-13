@@ -1,13 +1,11 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState} from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch} from "../../redux/store";
-import {
-  set_alert,
-  remove_alert
-} from '../../redux/alert/alertSlice';
+import { useDispatch } from 'react-redux';
+import { set_alert,remove_alert} from '../../redux/slices/alertSlice';
+import { v4 as uuidv4 } from 'uuid';
 
 const Register = (setAlert) => {
+  const id = uuidv4();
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     name: '',
@@ -17,14 +15,16 @@ const Register = (setAlert) => {
   });
   const { name, email, password, password2 } = formData;
   const onChange = (e) => {
-    console.log(e);
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const onSubmit = async (e) => {
     e.preventDefault();
 
     if (password !== password2) {
-      dispatch(set_alert({alertType:"Danger",msg:"Passwords dont match"}));
+      dispatch(
+        set_alert({ alertType: 'danger', msg: 'Passwords dont match', id: id })
+      );
+      setTimeout(() => dispatch(remove_alert({id:id})),5000)
     } else {
       console.log('SUCCESS');
     }
@@ -93,6 +93,5 @@ const Register = (setAlert) => {
     </section>
   );
 };
-
 
 export default Register;
