@@ -1,32 +1,45 @@
-import React, { Fragment, useState} from 'react';
-import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { set_alert,remove_alert} from '../../redux/slices/alertSlice';
-import { v4 as uuidv4 } from 'uuid';
+import React, { Fragment, useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { useRegisterMutation } from '../redux/slices/usersApiSlice';
+import { setCredentials } from '../redux/slices/authSlice';
 
-const Register = (setAlert) => {
-  const id = uuidv4();
-  const dispatch = useDispatch();
+const Register = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    password2: '',
+    confirmPassword: '',
   });
-  const { name, email, password, password2 } = formData;
+  const { name, email, password, confirmPassword } = formData;
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { userInfo } = useSelector((state) => state.auth);
+  const [register, { isLoading }] = useRegisterMutation();
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate('/');
+    }
+  }, [navigate, userInfo]);
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
   const onSubmit = async (e) => {
     e.preventDefault();
-
-    if (password !== password2) {
-      dispatch(
-        set_alert({ alertType: 'danger', msg: 'Passwords dont match', id: id })
-      );
-      setTimeout(() => dispatch(remove_alert({id:id})),5000)
+    if (password !== confirmPassword) {
+      toast.error('Passwords do not match');
     } else {
-      console.log('SUCCESS');
+      try {
+        const res = await register({ name, email, password }).unwrap();
+        dispatch(setCredentials({ ...res }));
+        navigate('/');
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
     }
   };
 
@@ -77,8 +90,8 @@ const Register = (setAlert) => {
             <input
               type='password'
               placeholder='Confirm Password'
-              name='password2'
-              value={password2}
+              name='confirmPassword'
+              value={confirmPassword}
               onChange={(e) => onChange(e)}
               minLength='6'
               required
