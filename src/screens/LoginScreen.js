@@ -5,7 +5,7 @@ import { useLoginMutation} from '../redux/slices/usersApiSlice';
 import { setCredentials} from '../redux/slices/authSlice';
 import { toast } from 'react-toastify';
 
-const Login = () => {
+const LoginScreen = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -74,4 +74,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginScreen;

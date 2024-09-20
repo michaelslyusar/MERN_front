@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useLogoutMutation } from '../../redux/slices/usersApiSlice';
-import { logout } from '../../redux/slices/authSlice';
+import { useLogoutMutation } from '../redux/slices/usersApiSlice';
+import { logout } from '../redux/slices/authSlice';
 import { FaSignInAlt, FaSignOutAlt, FaAngleDown } from 'react-icons/fa';
 
 function Header() {
@@ -27,7 +27,6 @@ function Header() {
           <i className='fas fa-code'></i> DevConnector
         </Link>
       </h1>
-
       {userInfo ? (
         <>
           <div className='header_dropdown'>

@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { useRegisterMutation } from '../redux/slices/usersApiSlice';
 import { setCredentials } from '../redux/slices/authSlice';
 
-const Register = () => {
+const RegisterScreen = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -107,4 +107,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default RegisterScreen;
